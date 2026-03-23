@@ -24,7 +24,7 @@ function LoginAdmin() {
       const res = await adminLogin(data)
       const { token, admin } = res.data
       setAdminToken(token, admin)
-      navigate('/admin')
+      navigate('/admin/dashboard')
     } catch (err) {
       const msg = err.response?.data?.message || 'Credenciales incorrectas'
       setErrorMsg(msg)
