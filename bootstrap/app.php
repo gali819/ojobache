@@ -21,6 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // statefulApi() omitido intencionalmente: la autenticación de admin
+        // usa tokens Bearer (Sanctum), no cookies/sesiones.
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);

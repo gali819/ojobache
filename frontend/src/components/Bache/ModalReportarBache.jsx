@@ -27,13 +27,17 @@ function ModalReportarBache() {
   } = useForm()
 
   const onSubmit = async (data) => {
+    if (!coordenadasNuevoBache?.lat || !coordenadasNuevoBache?.lng) {
+      toast.error('No se detectaron las coordenadas. Intentá de nuevo.')
+      return
+    }
     setCargando(true)
     try {
       const payload = {
-        ...data,
-        latitud: coordenadasNuevoBache.lat,
-        longitud: coordenadasNuevoBache.lng,
-        user_uuid: userUUID,
+        lat: coordenadasNuevoBache.lat,
+        lng: coordenadasNuevoBache.lng,
+        descripcion: data.descripcion,
+        reporter_uuid: userUUID,
       }
       const res = await crearBache(payload)
       const nuevoBache = res.data.data ?? res.data
