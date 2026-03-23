@@ -22,11 +22,18 @@ function crearIcono(color) {
 
 function MarcadorBache({ bache }) {
   const seleccionarBache = useBacheStore((s) => s.seleccionarBache)
+
+  if (!bache?.lat || !bache?.lng ||
+      isNaN(parseFloat(bache.lat)) ||
+      isNaN(parseFloat(bache.lng))) {
+    return null
+  }
+
   const color = obtenerColorMarcador(bache)
 
   return (
     <Marker
-      position={[bache.latitud, bache.longitud]}
+      position={[parseFloat(bache.lat), parseFloat(bache.lng)]}
       icon={crearIcono(color)}
       eventHandlers={{ click: () => seleccionarBache(bache) }}
     >

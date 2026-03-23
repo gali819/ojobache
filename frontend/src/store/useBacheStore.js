@@ -15,7 +15,13 @@ const useBacheStore = create((set) => ({
     set({ cargando: true, error: null })
     try {
       const res = await getBaches(params)
-      set({ baches: res.data.data ?? res.data, cargando: false })
+      const data = res.data.data ?? res.data
+      const bachesValidos = data.filter(b =>
+        b.lat != null && b.lng != null &&
+        !isNaN(parseFloat(b.lat)) &&
+        !isNaN(parseFloat(b.lng))
+      )
+      set({ baches: bachesValidos, cargando: false })
     } catch (err) {
       set({ error: err.message, cargando: false })
     }

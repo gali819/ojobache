@@ -7,6 +7,13 @@ import useBacheStore from '../../store/useBacheStore'
 import MarcadorBache from './MarcadorBache'
 import ControlUbicacion from './ControlUbicacion'
 
+delete L.Icon.Default.prototype._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).href,
+  iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).href,
+  shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href,
+})
+
 const TUCUMAN_CENTER = [-26.8241, -65.2226]
 const ZOOM_INICIAL = 13
 const HINT_KEY = 'ojobache_hint_shown'
