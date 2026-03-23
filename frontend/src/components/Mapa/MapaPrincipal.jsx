@@ -100,7 +100,7 @@ function MapaPrincipal() {
       <MapContainer
         center={TUCUMAN_CENTER}
         zoom={ZOOM_INICIAL}
-        style={{ height: '100vh', width: '100%' }}
+        style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
           attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
