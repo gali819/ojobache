@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import toast from 'react-hot-toast'
-import { X, ThumbsUp, CheckCircle } from 'lucide-react'
+import { X, ThumbsUp, CheckCircle, Share2 } from 'lucide-react'
 import useBacheStore from '../../store/useBacheStore'
 import { votar } from '../../services/api'
 import { useUserUUID } from '../../hooks/useUserUUID'
@@ -31,22 +31,62 @@ function PanelDetalleBache() {
     }
   }
 
+  const compartir = async () => {
+    if (!bacheSeleccionado) return
+    const url = window.location.origin + '?bache=' + bacheSeleccionado.uuid
+    const titulo = 'Bache en ' + (bacheSeleccionado.direccion || 'Tucumán')
+    const texto = 'Hay un bache reportado en ' + (bacheSeleccionado.direccion || 'Tucumán')
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: titulo, text: texto, url })
+      } catch {
+        // usuario canceló
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url)
+        toast.success('¡Link copiado!')
+      } catch {
+        toast.error('No se pudo copiar el link')
+      }
+    }
+  }
+
   return (
     <AnimatePresence>
       {bacheSeleccionado && (
         <motion.div
+          drag="y"
+          dragConstraints={{ top: 0 }}
+          onDragEnd={(e, info) => {
+            if (info.offset.y > 100) cerrarDetalle()
+          }}
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           className="fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-xl overflow-y-auto"
           style={{ zIndex: 2001 }}
         >
+          {/* Handle para swipe en mobile */}
+          <div className="flex justify-center pt-2 pb-1 md:hidden">
+            <div className="w-10 h-1 bg-gray-300 rounded-full" />
+          </div>
+
           <div className="p-4">
             <div className="flex items-start justify-between mb-3">
               <BadgeEstado estado={bacheSeleccionado.estado} />
-              <button onClick={cerrarDetalle}>
-                <X size={20} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={compartir}
+                  className="text-gray-500 hover:text-blue-600 transition"
+                  aria-label="Compartir"
+                >
+                  <Share2 size={18} />
+                </button>
+                <button onClick={cerrarDetalle} aria-label="Cerrar">
+                  <X size={20} />
+                </button>
+              </div>
             </div>
 
             {bacheSeleccionado.fotos?.length > 0 && (

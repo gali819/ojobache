@@ -18,13 +18,30 @@ function ModalReportarBache() {
   const userUUID = useUserUUID()
   const [cargando, setCargando] = useState(false)
   const [fotos, setFotos] = useState([])
+  const [previews, setPreviews] = useState([])
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm()
+
+  const descripcion = watch('descripcion') || ''
+
+  const handleFotos = (e) => {
+    const archivos = Array.from(e.target.files || [])
+    setFotos(archivos)
+    const urls = archivos.map((f) => URL.createObjectURL(f))
+    setPreviews(urls)
+  }
+
+  const eliminarFoto = (idx) => {
+    URL.revokeObjectURL(previews[idx])
+    setFotos(fotos.filter((_, i) => i !== idx))
+    setPreviews(previews.filter((_, i) => i !== idx))
+  }
 
   const onSubmit = async (data) => {
     if (!coordenadasNuevoBache?.lat || !coordenadasNuevoBache?.lng) {
@@ -43,7 +60,7 @@ function ModalReportarBache() {
       const nuevoBache = res.data.data ?? res.data
 
       if (fotos.length > 0) {
-        for (const foto of Array.from(fotos)) {
+        for (const foto of fotos) {
           const formData = new FormData()
           formData.append('foto', foto)
           await subirFoto(nuevoBache.uuid, formData)
@@ -54,13 +71,17 @@ function ModalReportarBache() {
       toast.success('¡Bache reportado!')
       cerrarModalReportar()
       reset()
+      previews.forEach((url) => URL.revokeObjectURL(url))
       setFotos([])
+      setPreviews([])
     } catch {
       toast.error('Error al reportar el bache')
     } finally {
       setCargando(false)
     }
   }
+
+  const sinCoordenadas = !coordenadasNuevoBache?.lat || !coordenadasNuevoBache?.lng
 
   return (
     <AnimatePresence>
@@ -93,38 +114,96 @@ function ModalReportarBache() {
                   Descripción
                 </label>
                 <textarea
-                  {...register('descripcion', { required: 'La descripción es obligatoria' })}
+                  {...register('descripcion', {
+                    required: 'La descripción es obligatoria',
+                    maxLength: { value: 500, message: 'Máximo 500 caracteres' },
+                  })}
                   rows={3}
                   className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Describí el bache..."
                 />
-                {errors.descripcion && (
-                  <p className="text-red-500 text-xs mt-1">{errors.descripcion.message}</p>
-                )}
+                <div className="flex items-center justify-between mt-1">
+                  {errors.descripcion ? (
+                    <p className="text-red-500 text-xs">{errors.descripcion.message}</p>
+                  ) : (
+                    <span />
+                  )}
+                  <span className={`text-xs ${descripcion.length > 480 ? 'text-red-400' : 'text-gray-400'}`}>
+                    {descripcion.length}/500
+                  </span>
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Fotos (opcional)
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   multiple
-                  onChange={(e) => setFotos(e.target.files)}
+                  onChange={handleFotos}
                   className="text-sm"
                 />
+                {previews.length > 0 && (
+                  <div className="flex gap-2 mt-3 flex-wrap">
+                    {previews.map((url, idx) => (
+                      <div key={idx} className="relative" style={{ width: 80, height: 80 }}>
+                        <img
+                          src={url}
+                          alt={`Foto ${idx + 1}`}
+                          style={{
+                            width: 80,
+                            height: 80,
+                            objectFit: 'cover',
+                            borderRadius: 8,
+                            border: '1px solid #e5e7eb',
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => eliminarFoto(idx)}
+                          style={{
+                            position: 'absolute',
+                            top: -6,
+                            right: -6,
+                            width: 20,
+                            height: 20,
+                            borderRadius: '50%',
+                            backgroundColor: '#E63946',
+                            color: 'white',
+                            border: 'none',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                          }}
+                          aria-label="Eliminar foto"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <p className="text-xs text-gray-500">
-                Ubicación: {coordenadasNuevoBache?.lat.toFixed(5)},{' '}
-                {coordenadasNuevoBache?.lng.toFixed(5)}
+                📍 {coordenadasNuevoBache
+                  ? `${coordenadasNuevoBache.lat.toFixed(5)}, ${coordenadasNuevoBache.lng.toFixed(5)}`
+                  : 'Sin ubicación'}
               </p>
 
               <button
                 type="submit"
-                disabled={cargando}
-                className="w-full bg-red-600 text-white rounded-lg py-2 font-semibold hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                disabled={cargando || sinCoordenadas}
+                className="w-full text-white rounded-lg py-2 font-semibold flex items-center justify-center gap-2 transition"
+                style={{
+                  backgroundColor: sinCoordenadas ? '#9ca3af' : '#E63946',
+                  cursor: sinCoordenadas ? 'not-allowed' : 'pointer',
+                }}
               >
                 {cargando ? <LoadingSpinner size="sm" /> : null}
                 {cargando ? 'Enviando...' : 'Reportar bache'}

@@ -4,12 +4,26 @@ function FABReportar({ onClick }) {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-20 right-4 bg-red-600 text-white rounded-full p-4 shadow-lg flex items-center gap-2 md:bottom-6"
-      style={{ zIndex: 1000 }}
+      style={{
+        position: 'fixed',
+        bottom: '80px',
+        right: '16px',
+        zIndex: 1000,
+        width: '56px',
+        height: '56px',
+        borderRadius: '50%',
+        backgroundColor: '#E63946',
+        color: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+        border: 'none',
+        cursor: 'pointer',
+      }}
       aria-label="Reportar bache"
     >
       <Plus size={24} />
-      <span className="hidden md:inline font-semibold">Reportar bache</span>
     </button>
   )
 }

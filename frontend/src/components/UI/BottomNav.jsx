@@ -12,22 +12,23 @@ function BottomNav() {
   const location = useLocation()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden" style={{ zIndex: 1000 }}>
-      <div className="flex">
-        {navItems.map(({ to, icon: Icon, label }) => {
-          const active = location.pathname === to
-          return (
-            <Link
-              key={to}
-              to={to}
-              className={`flex-1 flex flex-col items-center py-2 text-xs ${active ? 'text-red-600' : 'text-gray-500'}`}
-            >
-              <Icon size={20} />
-              <span>{label}</span>
-            </Link>
-          )
-        })}
-      </div>
+    <nav
+      className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex"
+      style={{ zIndex: 1000, height: '64px' }}
+    >
+      {navItems.map(({ to, icon: Icon, label }) => {
+        const active = location.pathname === to
+        return (
+          <Link
+            key={to}
+            to={to}
+            className={`flex-1 flex flex-col items-center py-2 text-xs ${active ? 'text-red-600' : 'text-gray-500'}`}
+          >
+            <Icon size={20} />
+            <span>{label}</span>
+          </Link>
+        )
+      })}
     </nav>
   )
 }

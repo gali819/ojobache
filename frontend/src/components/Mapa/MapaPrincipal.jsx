@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet'
+import MarkerClusterGroup from 'react-leaflet-cluster'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import toast from 'react-hot-toast'
 import useBacheStore from '../../store/useBacheStore'
 import MarcadorBache from './MarcadorBache'
 import ControlUbicacion from './ControlUbicacion'
@@ -33,13 +33,6 @@ const iconoUsuario = L.divIcon({
   iconSize: [20, 20],
   iconAnchor: [10, 10],
 })
-
-function mostrarHintUnaVez() {
-  if (!localStorage.getItem(HINT_KEY)) {
-    toast('Mantené presionado el mapa para reportar un bache 📍', { duration: 4000, icon: null })
-    localStorage.setItem(HINT_KEY, '1')
-  }
-}
 
 function GeolocalizacionInicial({ onPosicion }) {
   const map = useMap()
@@ -89,14 +82,19 @@ function MapaEventosToque({ abrirModalReportar }) {
 function MapaPrincipal() {
   const { baches, cargarBaches, abrirModalReportar } = useBacheStore()
   const [posUsuario, setPosUsuario] = useState(null)
+  const [mostrarHint, setMostrarHint] = useState(false)
 
   useEffect(() => {
     cargarBaches()
-    mostrarHintUnaVez()
+    if (!localStorage.getItem(HINT_KEY)) {
+      setMostrarHint(true)
+      localStorage.setItem(HINT_KEY, '1')
+      setTimeout(() => setMostrarHint(false), 4000)
+    }
   }, [cargarBaches])
 
   return (
-    <div className="w-full h-screen relative">
+    <div style={{ height: '100%', width: '100%', position: 'relative' }}>
       <MapContainer
         center={TUCUMAN_CENTER}
         zoom={ZOOM_INICIAL}
@@ -116,10 +114,31 @@ function MapaPrincipal() {
             interactive={false}
           />
         )}
-        {baches.map((bache) => (
-          <MarcadorBache key={bache.uuid} bache={bache} />
-        ))}
+        <MarkerClusterGroup>
+          {baches.map((bache) => (
+            <MarcadorBache key={bache.uuid} bache={bache} />
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
+
+      {mostrarHint && (
+        <div style={{
+          position: 'absolute',
+          bottom: '120px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 900,
+          background: 'rgba(29,53,87,0.9)',
+          color: 'white',
+          padding: '10px 16px',
+          borderRadius: '20px',
+          fontSize: '14px',
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+        }}>
+          📍 Mantené presionado para reportar un bache
+        </div>
+      )}
     </div>
   )
 }

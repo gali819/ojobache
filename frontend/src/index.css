@@ -1,4 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap');
 @import "tailwindcss";
+
+:root {
+  --color-primario: #E63946;
+  --color-secundario: #1D3557;
+  --color-acento: #F4A261;
+  --color-exito: #2A9D8F;
+  --color-fondo: #F8F9FA;
+}
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.leaflet-container {
+  font-family: 'Inter', sans-serif !important;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.marker-usuario {
+  position: relative;
+}
+
+.marker-usuario::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(29, 53, 87, 0.4);
+  animation: pulse-ring 1.5s ease-out infinite;
+}
 
 @keyframes pulse-ubicacion {
   0%   { box-shadow: 0 0 0 2px #3B82F6, 0 0 0 4px rgba(59,130,246,0.4); }
