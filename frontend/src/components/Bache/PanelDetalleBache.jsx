@@ -38,7 +38,8 @@ function PanelDetalleBache() {
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
-          className="fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-xl z-[900] overflow-y-auto"
+          className="fixed right-0 top-0 h-full w-full max-w-sm bg-white shadow-xl overflow-y-auto"
+          style={{ zIndex: 2001 }}
         >
           <div className="p-4">
             <div className="flex items-start justify-between mb-3">

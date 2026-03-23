@@ -4,7 +4,7 @@ function Navbar() {
   const location = useLocation()
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="bg-white shadow-sm sticky top-0" style={{ zIndex: 1000 }}>
       <nav className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="text-xl font-bold text-red-600">
           🕳️ OjoBache

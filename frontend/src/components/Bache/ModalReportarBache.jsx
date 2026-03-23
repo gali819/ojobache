@@ -64,7 +64,8 @@ function ModalReportarBache() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 z-[1000] flex items-end md:items-center justify-center"
+          className="fixed inset-0 bg-black/50 flex items-end md:items-center justify-center"
+          style={{ zIndex: 2000 }}
           onClick={(e) => e.target === e.currentTarget && cerrarModalReportar()}
         >
           <motion.div
@@ -72,6 +73,7 @@ function ModalReportarBache() {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             className="bg-white w-full max-w-lg rounded-t-2xl md:rounded-2xl p-6"
+            style={{ zIndex: 2001 }}
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Reportar bache</h2>

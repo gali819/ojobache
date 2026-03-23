@@ -12,7 +12,7 @@ function BottomNav() {
   const location = useLocation()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden" style={{ zIndex: 1000 }}>
       <div className="flex">
         {navItems.map(({ to, icon: Icon, label }) => {
           const active = location.pathname === to
