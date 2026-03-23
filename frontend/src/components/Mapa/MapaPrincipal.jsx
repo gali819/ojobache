@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet'
-import MarkerClusterGroup from 'react-leaflet-cluster'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import useBacheStore from '../../store/useBacheStore'
@@ -114,11 +113,9 @@ function MapaPrincipal() {
             interactive={false}
           />
         )}
-        <MarkerClusterGroup>
-          {baches.map((bache) => (
-            <MarcadorBache key={bache.uuid} bache={bache} />
-          ))}
-        </MarkerClusterGroup>
+        {baches.map((bache) => (
+          <MarcadorBache key={bache.uuid} bache={bache} />
+        ))}
       </MapContainer>
 
       {mostrarHint && (
