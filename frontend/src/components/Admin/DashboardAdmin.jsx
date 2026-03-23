@@ -7,6 +7,7 @@ import LoadingSpinner from '../UI/LoadingSpinner'
 
 function DashboardAdmin() {
   const clearAdmin = useBacheStore((s) => s.clearAdmin)
+  const adminUser = useBacheStore((s) => s.adminUser)
   const [stats, setStats] = useState(null)
   const [cargando, setCargando] = useState(true)
 
@@ -30,7 +31,12 @@ function DashboardAdmin() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Panel de Administración</h1>
+        <div>
+          <h1 className="text-2xl font-bold">Panel Admin — OjoBache</h1>
+          {adminUser?.name && (
+            <p className="text-sm text-gray-500 mt-0.5">Hola, {adminUser.name}</p>
+          )}
+        </div>
         <button
           onClick={handleLogout}
           className="text-sm text-red-600 hover:underline"
@@ -44,9 +50,9 @@ function DashboardAdmin() {
       ) : stats ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard label="Total baches" value={stats.total_baches} />
-          <StatCard label="Activos" value={stats.activos} />
-          <StatCard label="Resueltos" value={stats.resueltos} />
-          <StatCard label="En proceso" value={stats.en_proceso} />
+          <StatCard label="Activos" value={stats.baches_activos ?? stats.activos} />
+          <StatCard label="Resueltos" value={stats.baches_resueltos ?? stats.resueltos} />
+          <StatCard label="Esta semana" value={stats.baches_esta_semana ?? stats.en_proceso} />
         </div>
       ) : null}
 

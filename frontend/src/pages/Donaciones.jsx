@@ -1,50 +1,109 @@
-import { Heart, Coffee, DollarSign } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { getEstadisticas } from '../services/api'
+import { Cloud, Map, Zap } from 'lucide-react'
+
+const ALIAS = import.meta.env.VITE_ALIAS_DONACION || 'alias.mercadopago'
 
 function Donaciones() {
-  return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-2">Apoyá OjoBache</h1>
-      <p className="text-gray-600 mb-8">
-        OjoBache es un proyecto gratuito y sin publicidad mantenido por la comunidad.
-        Si querés ayudarnos a seguir mejorando, podés colaborar con una donación.
-      </p>
+  const [totalBaches, setTotalBaches] = useState(null)
+  const [copiado, setCopiado] = useState(false)
+  const anio = new Date().getFullYear()
 
-      <div className="grid gap-4">
-        <DonationCard
-          icon={<Coffee size={32} />}
-          title="Invitame un café"
-          description="Una donación pequeña para cubrir los costos del servidor."
-          color="bg-amber-50 border-amber-200"
-        />
-        <DonationCard
-          icon={<Heart size={32} className="text-red-500" />}
-          title="Doná con Mercado Pago"
-          description="Ayudanos con lo que puedas, cualquier monto es bienvenido."
-          color="bg-red-50 border-red-200"
-        />
-        <DonationCard
-          icon={<DollarSign size={32} className="text-green-600" />}
-          title="Transferencia bancaria"
-          description="Escribinos a ojobache@gmail.com para recibir los datos bancarios."
-          color="bg-green-50 border-green-200"
-        />
+  useEffect(() => {
+    getEstadisticas()
+      .then((res) => {
+        const data = res.data.data ?? res.data
+        setTotalBaches(data.total_baches ?? null)
+      })
+      .catch(() => {
+        // Statistics unavailable — badge simply won't render
+      })
+  }, [])
+
+  const copiarAlias = () => {
+    navigator.clipboard.writeText(ALIAS).then(() => {
+      setCopiado(true)
+      setTimeout(() => setCopiado(false), 2000)
+    })
+  }
+
+  return (
+    <div style={{ backgroundColor: '#F8F9FA' }} className="min-h-screen">
+      {/* ── Hero ── */}
+      <div
+        className="py-14 px-4 text-white text-center"
+        style={{ background: 'linear-gradient(135deg, #1D3557, #2A9D8F)' }}
+      >
+        <div className="text-6xl mb-4">🕳️</div>
+        <h1 className="text-4xl font-extrabold mb-2">OjoBache</h1>
+        <p className="text-lg opacity-90 mb-4">Hecho con amor por un vecino de Tucumán</p>
+        {totalBaches !== null && (
+          <span className="inline-block bg-white/20 text-white text-sm font-semibold px-4 py-2 rounded-full">
+            Ya mapeamos {totalBaches} baches en Tucumán 🗺️
+          </span>
+        )}
       </div>
 
-      <p className="text-center text-sm text-gray-400 mt-8">
-        ¡Gracias por ser parte de OjoBache! 🕳️
-      </p>
-    </div>
-  )
-}
+      <div className="max-w-xl mx-auto px-4 py-8 space-y-6">
+        {/* ── Historia personal ── */}
+        <div className="bg-white rounded-xl shadow-md p-6">
+          <p className="text-gray-700 leading-relaxed">
+            OjoBache nació de la bronca de esquivar baches todos los días.
+            Si esta herramienta te sirve para moverte mejor por la ciudad,
+            considerá invitarme un café ☕
+          </p>
+        </div>
 
-function DonationCard({ icon, title, description, color }) {
-  return (
-    <div className={`flex items-start gap-4 p-5 border rounded-xl ${color}`}>
-      <div className="text-amber-600 flex-shrink-0">{icon}</div>
-      <div>
-        <h3 className="font-semibold text-gray-800">{title}</h3>
-        <p className="text-sm text-gray-600 mt-1">{description}</p>
+        {/* ── Donación ── */}
+        <div
+          className="bg-white rounded-xl shadow-md p-6"
+          style={{ border: '2px solid #E63946' }}
+        >
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Apoyá el proyecto</h2>
+          <p className="text-gray-600 text-sm mb-5">
+            Tu donación ayuda a mantener los servidores andando
+          </p>
+          <div className="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3">
+            <span className="text-2xl font-mono font-bold text-gray-800 flex-1 break-all">
+              {ALIAS}
+            </span>
+            <button
+              onClick={copiarAlias}
+              className="flex-shrink-0 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+              style={{
+                backgroundColor: copiado ? '#2A9D8F' : '#E63946',
+                color: 'white',
+              }}
+            >
+              {copiado ? '¡Copiado! ✓' : 'Copiar alias'}
+            </button>
+          </div>
+        </div>
+
+        {/* ── Transparencia ── */}
+        <div className="bg-white rounded-xl shadow-md p-6">
+          <h2 className="text-lg font-bold text-gray-800 mb-4">¿Para qué se usa?</h2>
+          <ul className="space-y-3 text-gray-700">
+            <li className="flex items-center gap-3">
+              <Cloud size={20} className="text-blue-400 flex-shrink-0" />
+              <span>Hosting del servidor</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <Map size={20} className="text-green-500 flex-shrink-0" />
+              <span>Mantenimiento del mapa</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <Zap size={20} className="text-yellow-500 flex-shrink-0" />
+              <span>Mejoras y nuevas funciones</span>
+            </li>
+          </ul>
+        </div>
       </div>
+
+      {/* ── Footer ── */}
+      <footer className="text-center text-sm text-gray-400 py-8">
+        Desarrollado con 💙 en Tucumán, Argentina — {anio}
+      </footer>
     </div>
   )
 }
