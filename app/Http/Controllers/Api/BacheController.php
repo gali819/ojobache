@@ -90,20 +90,6 @@ class BacheController extends Controller
             $validated['descripcion'] = strip_tags($validated['descripcion']);
         }
 
-        // Verificar que no exista un bache del mismo reporter_uuid a menos de 20 metros
-        $existeCercano = Bache::where('reporter_uuid', $validated['reporter_uuid'])
-            ->whereRaw(
-                '(6371000 * acos(cos(radians(?)) * cos(radians(lat)) * cos(radians(lng) - radians(?)) + sin(radians(?)) * sin(radians(lat)))) <= 20',
-                [$validated['lat'], $validated['lng'], $validated['lat']]
-            )
-            ->exists();
-
-        if ($existeCercano) {
-            return response()->json([
-                'message' => 'Ya reportaste un bache muy cerca de este punto.',
-            ], 409);
-        }
-
         $bache = Bache::create($validated);
 
         // Limpiar caché de baches

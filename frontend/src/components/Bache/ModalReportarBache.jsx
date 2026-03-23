@@ -43,10 +43,11 @@ function ModalReportarBache() {
       const nuevoBache = res.data.data ?? res.data
 
       if (fotos.length > 0) {
-        const formData = new FormData()
-        Array.from(fotos).forEach((f) => formData.append('fotos[]', f))
-        formData.append('user_uuid', userUUID)
-        await subirFoto(nuevoBache.uuid, formData)
+        for (const foto of Array.from(fotos)) {
+          const formData = new FormData()
+          formData.append('foto', foto)
+          await subirFoto(nuevoBache.uuid, formData)
+        }
       }
 
       agregarBache(nuevoBache)
