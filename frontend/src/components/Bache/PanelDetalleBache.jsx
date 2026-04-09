@@ -10,9 +10,9 @@ import { formatearFecha, tiempoTranscurrido } from '../../utils/helpers'
 import CarouselFotos from './CarouselFotos'
 
 function PanelDetalleBache() {
-  const { bacheSeleccionado, cerrarDetalle, actualizarVotos } = useBacheStore()
+  const { bacheSeleccionado, cerrarDetalle } = useBacheStore()
   const userUUID = useUserUUID()
-  const [votando, setVotando] = useState(false)
+  const [votando] = useState(false)
   const [bacheDetalle, setBacheDetalle] = useState(null)
 
   useEffect(() => {
