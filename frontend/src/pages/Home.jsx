@@ -1,4 +1,5 @@
 import MapaPrincipal from '../components/Mapa/MapaPrincipal'
+import ModalBienvenida from '../components/UI/ModalBienvenida'
 import PanelDetalleBache from '../components/Bache/PanelDetalleBache'
 import ModalReportarBache from '../components/Bache/ModalReportarBache'
 import FABReportar from '../components/UI/FABReportar'
@@ -29,6 +30,7 @@ function Home() {
       {/* Modales fuera del flujo */}
       <ModalReportarBache />
       <PanelDetalleBache />
+      <ModalBienvenida />
 
       {/* FAB solo en mobile */}
       <div className="md:hidden">
