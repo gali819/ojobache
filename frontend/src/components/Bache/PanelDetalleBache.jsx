@@ -28,19 +28,35 @@ function PanelDetalleBache() {
   const bache = bacheDetalle ?? bacheSeleccionado
 
   const handleVotar = async (tipo) => {
-    if (!bacheSeleccionado) return
-    setVotando(true)
     try {
-      const res = await votar(bacheSeleccionado.uuid, {
-        tipo,
-        user_uuid: userUUID,
+      const res = await votar(bacheDetalle.uuid, {
+        tipo: tipo,
+        voter_uuid: userUUID,
       })
-      actualizarVotos(bacheSeleccionado.uuid, res.data.data ?? res.data)
-      toast.success('Voto registrado')
-    } catch {
-      toast.error('Ya votaste o ocurrió un error')
-    } finally {
-      setVotando(false)
+      // guardar en localStorage que ya votó
+      const votosGuardados = JSON.parse(
+        localStorage.getItem('ojobache_votos') || '{}'
+      )
+      votosGuardados[bacheDetalle.uuid] = tipo
+      localStorage.setItem('ojobache_votos', JSON.stringify(votosGuardados))
+      // actualizar estado local con los nuevos contadores
+      setBacheDetalle(prev => ({
+        ...prev,
+        votos_activo: res.data.votos_activo,
+        votos_resuelto: res.data.votos_resuelto,
+        estado: res.data.estado,
+      }))
+      if (res.data.estado === 'resuelto') {
+        toast.success('¡Bache marcado como resuelto! 🎉')
+      } else {
+        toast.success('¡Voto registrado. Gracias!')
+      }
+    } catch (error) {
+      if (error.response?.status === 409) {
+        toast.error('Ya votaste en este bache')
+      } else {
+        toast.error('Ocurrió un error al votar')
+      }
     }
   }
 
