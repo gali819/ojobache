@@ -15,6 +15,9 @@ function CarouselFotos({ fotos }) {
         src={fotos[idx].url}
         alt={`Foto ${idx + 1}`}
         className="w-full h-full object-cover"
+        onError={(e) => {
+          e.target.src = 'https://placehold.co/400x200?text=Sin+foto'
+        }}
       />
       {fotos.length > 1 && (
         <>

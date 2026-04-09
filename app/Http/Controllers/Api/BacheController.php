@@ -62,11 +62,7 @@ class BacheController extends Controller
      */
     public function show(string $uuid): JsonResponse
     {
-        $bache = Bache::with('fotos')->where('uuid', $uuid)->first();
-
-        if (! $bache) {
-            return response()->json(['message' => 'Bache no encontrado.'], 404);
-        }
+        $bache = Bache::with('fotos')->where('uuid', $uuid)->firstOrFail();
 
         return response()->json($bache);
     }

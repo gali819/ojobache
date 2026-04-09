@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { X, ThumbsUp, CheckCircle, Share2 } from 'lucide-react'
 import useBacheStore from '../../store/useBacheStore'
-import { votar } from '../../services/api'
+import { getBache, votar } from '../../services/api'
 import { useUserUUID } from '../../hooks/useUserUUID'
 import BadgeEstado from '../UI/BadgeEstado'
 import { formatearFecha, tiempoTranscurrido } from '../../utils/helpers'
@@ -13,6 +13,19 @@ function PanelDetalleBache() {
   const { bacheSeleccionado, cerrarDetalle, actualizarVotos } = useBacheStore()
   const userUUID = useUserUUID()
   const [votando, setVotando] = useState(false)
+  const [bacheDetalle, setBacheDetalle] = useState(null)
+
+  useEffect(() => {
+    if (bacheSeleccionado?.uuid) {
+      getBache(bacheSeleccionado.uuid).then(res => {
+        setBacheDetalle(res.data)
+      })
+    } else {
+      setBacheDetalle(null)
+    }
+  }, [bacheSeleccionado])
+
+  const bache = bacheDetalle ?? bacheSeleccionado
 
   const handleVotar = async (tipo) => {
     if (!bacheSeleccionado) return
@@ -32,10 +45,10 @@ function PanelDetalleBache() {
   }
 
   const compartir = async () => {
-    if (!bacheSeleccionado) return
-    const url = window.location.origin + '?bache=' + bacheSeleccionado.uuid
-    const titulo = 'Bache en ' + (bacheSeleccionado.direccion || 'Tucumán')
-    const texto = 'Hay un bache reportado en ' + (bacheSeleccionado.direccion || 'Tucumán')
+    if (!bache) return
+    const url = window.location.origin + '?bache=' + bache.uuid
+    const titulo = 'Bache en ' + (bache.direccion || 'Tucumán')
+    const texto = 'Hay un bache reportado en ' + (bache.direccion || 'Tucumán')
     if (navigator.share) {
       try {
         await navigator.share({ title: titulo, text: texto, url })
@@ -74,7 +87,7 @@ function PanelDetalleBache() {
 
           <div className="p-4">
             <div className="flex items-start justify-between mb-3">
-              <BadgeEstado estado={bacheSeleccionado.estado} />
+              <BadgeEstado estado={bache.estado} />
               <div className="flex items-center gap-2">
                 <button
                   onClick={compartir}
@@ -89,15 +102,15 @@ function PanelDetalleBache() {
               </div>
             </div>
 
-            {bacheSeleccionado.fotos?.length > 0 && (
-              <CarouselFotos fotos={bacheSeleccionado.fotos} />
+            {bache.fotos?.length > 0 && (
+              <CarouselFotos fotos={bache.fotos} />
             )}
 
-            <p className="text-gray-800 mt-3 text-sm">{bacheSeleccionado.descripcion}</p>
+            <p className="text-gray-800 mt-3 text-sm">{bache.descripcion}</p>
 
             <p className="text-xs text-gray-400 mt-1">
-              {tiempoTranscurrido(bacheSeleccionado.created_at)} ·{' '}
-              {formatearFecha(bacheSeleccionado.created_at)}
+              {tiempoTranscurrido(bache.created_at)} ·{' '}
+              {formatearFecha(bache.created_at)}
             </p>
 
             <div className="flex gap-3 mt-4">
@@ -107,7 +120,7 @@ function PanelDetalleBache() {
                 className="flex-1 flex items-center justify-center gap-2 border rounded-lg py-2 text-sm hover:bg-red-50 text-red-600 border-red-200 disabled:opacity-50"
               >
                 <ThumbsUp size={16} />
-                Activo ({bacheSeleccionado.votos_activo ?? 0})
+                Activo ({bache.votos_activo ?? 0})
               </button>
               <button
                 onClick={() => handleVotar('resuelto')}
@@ -115,7 +128,7 @@ function PanelDetalleBache() {
                 className="flex-1 flex items-center justify-center gap-2 border rounded-lg py-2 text-sm hover:bg-teal-50 text-teal-600 border-teal-200 disabled:opacity-50"
               >
                 <CheckCircle size={16} />
-                Resuelto ({bacheSeleccionado.votos_resuelto ?? 0})
+                Resuelto ({bache.votos_resuelto ?? 0})
               </button>
             </div>
           </div>

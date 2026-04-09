@@ -47,6 +47,6 @@ class Foto extends Model
      */
     public function getUrlAttribute(): string
     {
-        return Storage::url($this->path);
+        return asset('storage/' . $this->path);
     }
 }
