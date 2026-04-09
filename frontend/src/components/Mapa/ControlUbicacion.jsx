@@ -25,6 +25,7 @@ function ControlUbicacion() {
         onClick={centrarEnUbicacion}
         disabled={locating}
         className="bg-white rounded-md shadow p-2 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+        style={{ zIndex: 1000 }}
         title="Centrar en mi ubicación"
       >
         <Locate size={20} />
