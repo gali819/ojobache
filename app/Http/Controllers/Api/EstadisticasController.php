@@ -23,14 +23,40 @@ class EstadisticasController extends Controller
             $bachesEstaSemana = Bache::where('created_at', '>=', now()->startOfWeek())->count();
             $bachesEsteMes    = Bache::where('created_at', '>=', now()->startOfMonth())->count();
 
-            // Agrupar por los primeros 30 chars del campo direccion
-            $barrios = DB::table('baches')
-                ->selectRaw('SUBSTRING(direccion, 1, 30) as zona, COUNT(*) as total')
+            $zonasConocidas = [
+                'Yerba Buena', 'Tafí Viejo', 'Las Talitas',
+                'Banda del Río Salí', 'San Pablo', 'Alberdi',
+                'Villa Urquiza', 'San Miguel', 'Lomas de Tafí',
+                'Famailla', 'Villa 9 de Julio', 'El Manantial',
+                'Cebil Redondo', 'Los Pocitos', 'Villa Carmela',
+                'Barrio Norte', 'Barrio Sur', 'Centro',
+            ];
+
+            $baches = Bache::where('estado', 'activo')
                 ->whereNotNull('direccion')
-                ->groupBy('zona')
-                ->orderByDesc('total')
-                ->limit(10)
-                ->get();
+                ->pluck('direccion');
+
+            $conteoZonas = [];
+            foreach ($baches as $direccion) {
+                $zonaEncontrada = 'Otras zonas';
+                foreach ($zonasConocidas as $zona) {
+                    if (stripos($direccion, $zona) !== false) {
+                        $zonaEncontrada = $zona;
+                        break;
+                    }
+                }
+                $conteoZonas[$zonaEncontrada] = ($conteoZonas[$zonaEncontrada] ?? 0) + 1;
+            }
+
+            arsort($conteoZonas);
+            $barrios = array_slice(
+                array_map(
+                    fn($zona, $total) => ['zona' => $zona, 'total' => $total],
+                    array_keys($conteoZonas),
+                    array_values($conteoZonas)
+                ),
+                0, 10
+            );
 
             // Baches de los últimos 30 días agrupados por fecha
             $porDia = DB::table('baches')
