@@ -1,11 +1,10 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Map, BarChart2, Heart, Shield } from 'lucide-react'
+import { Map, BarChart2, Heart } from 'lucide-react'
 
 const navItems = [
   { to: '/', icon: Map, label: 'Mapa' },
   { to: '/estadisticas', icon: BarChart2, label: 'Stats' },
   { to: '/donaciones', icon: Heart, label: 'Donar' },
-  { to: '/admin', icon: Shield, label: 'Admin' },
 ]
 
 function BottomNav() {
