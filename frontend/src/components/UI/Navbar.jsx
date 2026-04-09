@@ -6,8 +6,9 @@ function Navbar() {
   return (
     <header className="bg-white shadow-sm sticky top-0" style={{ zIndex: 1000, position: 'relative' }}>
       <nav className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/">
+        <Link to="/" className="flex items-center gap-2">
           <img src="/logo.png" alt="OjoBache" className="h-10" />
+          <span className="text-xl font-bold text-blue-800">OjoBache</span>
         </Link>
         <div className="hidden md:flex gap-6">
           <Link
