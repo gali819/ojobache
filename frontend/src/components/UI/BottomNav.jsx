@@ -15,7 +15,9 @@ function BottomNav() {
       className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex"
       style={{ zIndex: 1000, height: '64px' }}
     >
-      {navItems.map(({ to, icon: Icon, label }) => {
+      {navItems.map((item) => {
+        const Icon = item.icon
+        const { to, label } = item
         const active = location.pathname === to
         return (
           <Link

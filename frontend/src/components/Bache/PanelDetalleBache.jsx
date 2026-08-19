@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion as Motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { X, ThumbsUp, CheckCircle, Share2 } from 'lucide-react'
 import useBacheStore from '../../store/useBacheStore'
@@ -16,12 +16,24 @@ function PanelDetalleBache() {
   const [bacheDetalle, setBacheDetalle] = useState(null)
 
   useEffect(() => {
+    let ignorar = false
+
     if (bacheSeleccionado?.uuid) {
       getBache(bacheSeleccionado.uuid).then(res => {
-        setBacheDetalle(res.data)
+        if (!ignorar) {
+          setBacheDetalle(res.data)
+        }
       })
     } else {
-      setBacheDetalle(null)
+      queueMicrotask(() => {
+        if (!ignorar) {
+          setBacheDetalle(null)
+        }
+      })
+    }
+
+    return () => {
+      ignorar = true
     }
   }, [bacheSeleccionado])
 
@@ -29,7 +41,7 @@ function PanelDetalleBache() {
 
   const handleVotar = async (tipo) => {
     try {
-      const res = await votar(bacheDetalle.uuid, {
+      const res = await votar(bache.uuid, {
         tipo: tipo,
         voter_uuid: userUUID,
       })
@@ -37,11 +49,11 @@ function PanelDetalleBache() {
       const votosGuardados = JSON.parse(
         localStorage.getItem('ojobache_votos') || '{}'
       )
-      votosGuardados[bacheDetalle.uuid] = tipo
+      votosGuardados[bache.uuid] = tipo
       localStorage.setItem('ojobache_votos', JSON.stringify(votosGuardados))
       // actualizar estado local con los nuevos contadores
       setBacheDetalle(prev => ({
-        ...prev,
+        ...(prev ?? bache),
         votos_activo: res.data.votos_activo,
         votos_resuelto: res.data.votos_resuelto,
         estado: res.data.estado,
@@ -84,7 +96,7 @@ function PanelDetalleBache() {
   return (
     <AnimatePresence>
       {bacheSeleccionado && (
-        <motion.div
+        <Motion.div
           drag="y"
           dragConstraints={{ top: 0 }}
           onDragEnd={(e, info) => {
@@ -148,7 +160,7 @@ function PanelDetalleBache() {
               </button>
             </div>
           </div>
-        </motion.div>
+        </Motion.div>
       )}
     </AnimatePresence>
   )

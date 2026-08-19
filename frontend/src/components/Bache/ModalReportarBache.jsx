@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion as Motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { X } from 'lucide-react'
 import useBacheStore from '../../store/useBacheStore'
@@ -86,7 +86,7 @@ function ModalReportarBache() {
   return (
     <AnimatePresence>
       {modalReportarAbierto && (
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -94,7 +94,7 @@ function ModalReportarBache() {
           style={{ zIndex: 2000 }}
           onClick={(e) => e.target === e.currentTarget && cerrarModalReportar()}
         >
-          <motion.div
+          <Motion.div
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -209,8 +209,8 @@ function ModalReportarBache() {
                 {cargando ? 'Enviando...' : 'Reportar bache'}
               </button>
             </form>
-          </motion.div>
-        </motion.div>
+          </Motion.div>
+        </Motion.div>
       )}
     </AnimatePresence>
   )

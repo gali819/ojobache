@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
-import { adminLogin } from '../../services/api'
+import { adminLogin, isDemoMode } from '../../services/api'
 import useBacheStore from '../../store/useBacheStore'
 
 function LoginAdmin() {
@@ -12,7 +12,14 @@ function LoginAdmin() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm()
+  } = useForm({
+    defaultValues: isDemoMode
+      ? {
+          email: 'admin@ojobache.com',
+          password: 'demo1234',
+        }
+      : undefined,
+  })
   const [cargando, setCargando] = useState(false)
   const [errorMsg, setErrorMsg] = useState(null)
   const [mostrarPass, setMostrarPass] = useState(false)

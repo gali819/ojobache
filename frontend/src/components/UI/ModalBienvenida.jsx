@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion as Motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 
 const ModalBienvenida = () => {
@@ -38,7 +38,7 @@ const ModalBienvenida = () => {
   return (
     <AnimatePresence>
       {mostrar && (
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -46,7 +46,7 @@ const ModalBienvenida = () => {
           style={{ zIndex: 3000 }}
           onClick={(e) => e.target === e.currentTarget && cerrar()}
         >
-          <motion.div
+          <Motion.div
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -83,8 +83,8 @@ const ModalBienvenida = () => {
             >
               ¡Entendido, empezar!
             </button>
-          </motion.div>
-        </motion.div>
+          </Motion.div>
+        </Motion.div>
       )}
     </AnimatePresence>
   )

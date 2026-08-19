@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export function useUserUUID() {
-  const [uuid, setUuid] = useState(() => {
+  const [uuid] = useState(() => {
     let stored = localStorage.getItem('ojobache_user_uuid')
     if (!stored) {
       stored = crypto.randomUUID()

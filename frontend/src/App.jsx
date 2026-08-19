@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import L from 'leaflet'
 import Navbar from './components/UI/Navbar'
@@ -9,8 +9,8 @@ import Donaciones from './pages/Donaciones'
 import NotFound from './pages/NotFound'
 import LoginAdmin from './components/Admin/LoginAdmin'
 import DashboardAdmin from './components/Admin/DashboardAdmin'
-import LoadingScreen from './components/UI/LoadingScreen'
 import useBacheStore from './store/useBacheStore'
+import { isDemoMode } from './services/api'
 
 // Fix íconos Leaflet
 delete L.Icon.Default.prototype._getIconUrl
@@ -43,8 +43,10 @@ function Layout({ children }) {
 }
 
 function App() {
+  const Router = isDemoMode ? HashRouter : BrowserRouter
+
   return (
-    <BrowserRouter>
+    <Router>
       <Toaster position="top-center" />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -55,7 +57,7 @@ function App() {
         <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   )
 }
 

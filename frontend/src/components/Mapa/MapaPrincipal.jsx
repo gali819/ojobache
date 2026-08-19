@@ -86,9 +86,14 @@ function MapaPrincipal() {
   useEffect(() => {
     cargarBaches()
     if (!localStorage.getItem(HINT_KEY)) {
-      setMostrarHint(true)
       localStorage.setItem(HINT_KEY, '1')
-      setTimeout(() => setMostrarHint(false), 4000)
+      const showTimer = setTimeout(() => setMostrarHint(true), 0)
+      const hideTimer = setTimeout(() => setMostrarHint(false), 4000)
+
+      return () => {
+        clearTimeout(showTimer)
+        clearTimeout(hideTimer)
+      }
     }
   }, [cargarBaches])
 
