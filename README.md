@@ -58,7 +58,7 @@ Los reportes, votos, fotos y cambios de admin se guardan solo en la pestaña del
 2. Hacé público el repo en GitHub si querés que Pages sea gratis.
 3. En GitHub, entrá a `Settings > Pages` y elegí `GitHub Actions` como source.
 4. Hacé push a la rama `Ramon`, `main` o `master`.
-5. El workflow `.github/workflows/demo-pages.yml` genera el frontend con `VITE_DEMO_MODE=true` y publica `frontend/dist`.
+5. El workflow `.github/workflows/demo-pages.yml` genera el frontend cons `VITE_DEMO_MODE=true` y publica `frontend/dist`.
 
 URL esperada: `https://gali819.github.io/ojobache/`
 
